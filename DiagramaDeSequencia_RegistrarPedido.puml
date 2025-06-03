@@ -1,0 +1,119 @@
+@startuml DiagramaDeSequencia_RegistrarPedido_FluxoUsuario
+
+' Aparência
+autonumber "<b>[00]"
+skinparam handwritten false
+skinparam monochrome false
+skinparam shadowing true
+skinparam defaultFontName Arial
+skinparam sequence {
+    ActorBorderColor navy
+    ActorBackgroundColor PaleBlue
+    LifeLineBorderColor black
+    LifeLineBackgroundColor #FFFFF0
+    ParticipantBorderColor navy
+    ParticipantBackgroundColor LightSeaGreen
+    BoxBorderColor #333333
+    BoxBackgroundColor #F8F8F8
+}
+skinparam note {
+    BackgroundColor #FFFFCC
+    BorderColor #888888
+}
+
+title Registrar Novo Pedido (Seguindo Lógica Descrita)
+
+actor Cliente as C
+participant Garcom as G <<Atendente>>
+participant Sistema as S
+participant Estoque as E <<Componente>>
+participant Cozinha as CZ <<Interface>>
+' Adicionado conforme fluxo
+participant Chefes as CHF <<EquipeCozinha>>
+' participant Bar as BR <<Interface>> ' Declarado conforme exemplo, mas não usado neste fluxo específico
+
+C -> G: Gostaria de fazer um pedido.
+activate G
+
+G -> S: iniciaAtendimento(id_mesa)
+activate S
+S --> G: retornarCardapio()
+'S deactivate ' Deactivating S here, G will interact with C, then S again.
+
+G -> C: Mostrar cardápio.
+activate C
+C -> C: Cliente verifica cardápio.
+C -> G: EscolhePedido(itensSelecionados)
+deactivate C
+
+'S activate ' Reactivate S for the new request from G
+G -> S: enviarPedido(id_mesa, itensSelecionados)
+' S is already active from iniciaAtendimento if not deactivated, or re-activated if it was.
+' Assuming S remains active or is reactivated by the message.
+' For clarity, let's ensure S is active for processing the order.
+' If S was deactivated after returning menu, it's re-activated by enviarPedido.
+
+S -> S: processarInformacoesPedido()
+S -> E: verificarDisponibilidadeItens(itensPedido)
+activate E
+E --> S: respostaDisponibilidade(isDisponivel, detalhes)
+deactivate E
+
+alt Itens Suficientes no Estoque [isDisponivel == true]
+    S -> S: confirmarPedidoInternamente()
+    S -> S: calcularValorTotal()
+    note right of S: Pedido com status: AGUARDANDO_PREPARO
+
+    S -> CZ: enviarPedidoParaCozinha(pedidoCompleto)
+    activate CZ
+    ' Cozinha confirma o recebimento
+    CZ --> S: pedidoRecebidoPelaCozinha()
+
+    CZ -> CHF: distribuirTarefasDoPedido(pedido)
+    activate CHF
+    CHF -> E: solicitarItensAoEstoque(ingredientesNecessarios)
+    activate E
+    E --> CHF: entregarItens(ingredientes)
+    deactivate E
+    
+    CHF -> CHF: Receber itens.
+    CHF -> CHF: Preparar pedido.
+    CHF -> CZ: pedidoRealizadoNaEstacao(pedido)
+    ' Chefes concluíram sua parte para este pedido
+    deactivate CHF
+    
+    ' Cozinha informa que o pedido geral está pronto
+    CZ -> S: informarPedidoProntoNoSistema(pedido)
+    ' Cozinha concluiu o ciclo deste pedido com o Sistema
+    deactivate CZ
+    
+    S -> S: atualizarStatusPedido(PRONTO_PARA_ENTREGA)
+    S --> G: notificarPedidoProntoParaServir(pedido, id_mesa)
+    ' Sistema conclui sua parte principal do processamento do pedido
+    deactivate S
+
+    G -> C: Entregar pedido.
+    activate C
+    C -> C: Recebe pedido pronto.
+    C -> C: Come refeição.
+    
+else Itens Insuficientes ou Indisponíveis [isDisponivel == false]
+    S --> G: informarIndisponibilidadeItens(detalhes)
+    ' Sistema informa indisponibilidade e conclui esta tentativa.
+    deactivate S
+    note left of G
+        Garçom informa Cliente sobre a indisponibilidade.
+        Cliente pode alterar o pedido ou cancelar itens.
+        (Este fluxo alternativo de modificação não 
+        está detalhado nesta sequência específica)
+    end note
+    ' O Garçom pode ter que reiniciar parte do processo com o Cliente.
+end
+
+' Após a refeição ou decisão de ir embora
+C -> G: Cliente finaliza e vai embora.
+deactivate C
+' Garçom finaliza este atendimento específico
+deactivate G
+
+@enduml

@@ -1,0 +1,306 @@
+@startuml diagrama_classes
+title Fluxo Completo de Atendimento ao Cliente com Formas de Pagamento
+
+'
+' Definições de Estilo e Cores Globais
+' Inspirado na legenda da imagem original.
+skinparam classAttributeIconSize 0 ' Oculta ícones de atributos para um visual mais limpo
+skinparam packageStyle rectangle    ' Estilo dos pacotes como retângulos simples
+
+' Definição das cores de fundo para as classes, conforme a legenda da imagem
+!define VERDE_BG #D5FFD6
+!define AZUL_CLARO_BG #D6F5FF
+!define LARANJA_BG #FFEBD6
+!define LILAS_CLARO_BG #F5D6FF
+
+' --- Pacote: Cardápio & Estoque ---
+package "Cardápio & Estoque" <<Cardápio & Estoque>> {
+    enum UnidadeMedida {
+        KG
+        LITRO
+        UNIDADE
+        GRAMA
+        ML
+        PECA
+    }
+
+    class CategoriaCardapio AZUL_CLARO_BG {
+        + (P) id: int
+        + nome: String
+        + descricao: String
+    }
+
+    class Ingrediente AZUL_CLARO_BG {
+        + (P) id: int
+        + nome: String
+        + descricao: String
+        + unidadeMedidaBase: UnidadeMedida
+        + custoPorUnidade: double
+        + quantidadeMinima: double
+    }
+
+    class Estoque AZUL_CLARO_BG {
+        + (P) id: int
+        + (F) ingrediente_id: int
+        + quantidade: double
+        + unidadeMedida: UnidadeMedida
+        + dataValidade: Date
+        + lote: String
+        + quantidadeMinima: double
+    }
+
+    class ItemCardapio AZUL_CLARO_BG {
+        + (P) id: int
+        + nome: String
+        + descricao: String
+        + preco: double
+        + tempoPreparoMedio: int // em minutos
+        + fotoUrl: String
+        + disponivel: boolean
+        + (F) categoria_id: int
+    }
+
+    class ItemCardapioIngrediente AZUL_CLARO_BG {
+        + (F) item_cardapio_id: int
+        + (F) ingrediente_id: int
+        + quantidadeNecessaria: double
+        + unidadeMedida: UnidadeMedida
+    }
+
+    class ComponenteItemCardapio AZUL_CLARO_BG {
+        + item_cardapio_id: int
+        + ingrediente_id: int
+        + quantidadeNecessaria: double
+        + unidadeMedidaComponente: UnidadeMedida
+    }
+}
+
+' --- Pacote: Pedidos & Mesas ---
+package "Pedidos & Mesas" <<Pedidos & Mesas>> {
+    enum StatusPedido {
+        AGUARDANDO_PREPARO
+        EM_PREPARO
+        PRONTO_PARA_ENTREGA
+        ENTREGUE
+        CANCELADO
+        PAGO
+    }
+    enum StatusMesa {
+        LIVRE
+        OCUPADA
+        RESERVADA
+        INDISPONIVEL
+    }
+
+    enum TipoMesa {
+        INTERNA
+        EXTERNA
+        BALCAO
+        AREA_VIP
+    }
+
+    class Mesa LARANJA_BG {
+        + (P) id: int
+        + numero: int
+        + capacidade: int
+        + status: StatusMesa // CORRIGIDO de String
+        + tipo: TipoMesa
+    }
+
+    class ItemPedido LARANJA_BG {
+        + (P) id: int
+        + (F) pedido_id: int
+        + (F) item_cardapio_id: int
+        + quantidade: int
+        + precoUnitario: double // Preço no momento da inclusão no pedido
+        + observacoes: String
+    }
+
+    class Pedido LARANJA_BG {
+        + (P) id: int
+        + (F) mesa_id: int
+        + (F) cliente_id: int
+        + (F) funcionario_id: int // Garçom responsável
+        + dataHoraAbertura: DateTime
+        + dataHoraFechamento: DateTime
+        + valorTotalCalculado: double
+        + valorTotalPago: double
+        + status: StatusPedido
+        + observacoes: String
+    }
+}
+
+' --- Pacote: Reservas & Eventos ---
+package "Reservas & Eventos" <<Reservas & Eventos>> {
+    enum StatusReserva {
+        PENDENTE_CONFIRMACAO
+        CONFIRMADA
+        CANCELADA_PELO_CLIENTE
+        CANCELADA_PELO_RESTAURANTE
+        CONCLUIDA
+        NO_SHOW // Cliente não compareceu
+    }
+
+    class Reserva LILAS_CLARO_BG {
+        + (P) id: int
+        + (F) cliente_id: int
+        + dataHoraReserva: DateTime // Data e hora para a qual a reserva foi feita
+        + dataHoraSolicitacao: DateTime // Data e hora em que o pedido de reserva foi feito
+        + numeroPessoas: int
+        + status: StatusReserva
+        + observacoes: String
+        ' IDs das mesas reservadas são gerenciados pela associação
+    }
+
+    class Evento LILAS_CLARO_BG {
+        + (P) id: int
+        + (F) cliente_id: int // Cliente ou organizador principal
+        + nomeEvento: String
+        + dataHoraInicio: DateTime
+        + dataHoraFim: DateTime
+        + numeroParticipantesEstimado: int
+        + descricaoDetalhada: String
+        + valorEntradaOuPacote: double
+        + observacoesAdicionais: String
+        ' IDs das mesas alocadas para o evento são gerenciados pela associação
+    }
+
+    class RecursoEvento LILAS_CLARO_BG {
+        + id: int
+        + evento_id: int
+        + tipo: String
+        + descricao: String
+        + quantidade: int
+    }
+}
+
+' --- Classe Cliente (fora de um pacote específico, mas com cor de usuário) ---
+class Cliente VERDE_BG {
+    + (P) id: int
+    + nomeCompleto: String
+    + telefonePrincipal: String
+    + telefoneSecundario: String
+    + email: String
+    + dataNascimento: Date
+    + dataCadastro: DateTime
+    + cpf: String
+    + endereco: String
+    + observacoesGerais: String
+}
+
+' --- Pacote: Funcionários ---
+package "Funcionários" <<Funcionários>> {
+    ' A imagem original sugere que GERENTE, GARCOM, etc., são tipos de Cargo.
+    ' Cargo é modelado como uma classe, onde o atributo 'nome' conteria essas designações.
+    class Cargo VERDE_BG {
+        + (P) id: int
+        + nome: String // Ex: "Gerente", "Garçom", "Cozinheiro", "Auxiliar de Cozinha", "Caixa"
+        + descricaoResponsabilidades: String
+    }
+
+    class Funcionario VERDE_BG {
+        + (P) id: int
+        + nomeCompleto: String
+        + cpf: String
+        + rg: String
+        + dataNascimento: Date
+        + dataAdmissao: Date
+        + dataDemissao: Date
+        + telefone: String
+        + emailProfissional: String
+        + enderecoCompleto: String
+        + (F) cargo_id: int
+        + salarioBase: double
+        + ativo: boolean // Indica se o funcionário está atualmente empregado
+    }
+
+    class EscalaTrabalho VERDE_BG {
+      + (P) id: int
+      + (F) funcionario_id: int
+      + (F) turno_id: int
+      + dataInicio: Date
+      + dataFim: Date
+    }
+
+    class Turno VERDE_BG {
+      + (P) id: int
+      + nome: String // Ex: Manhã, Tarde, Noite
+      + horaInicio: Time
+      + horaFim: Time
+    }
+
+    class Permissao VERDE_BG {
+      + id: int
+      + nomePermissao: String
+      + descricao: String
+    }
+    class CargoPermissao VERDE_BG {
+      + id: int
+      + cargo_id: int
+      + permissao_id: int
+    }
+    class EscalaFuncionario VERDE_BG {
+      + id: int
+      + funcionario_id: int
+      + turno_id: int
+      + dataReferencia: Date
+      + horaInicio: Time
+      + horaFim: Time
+    }
+}
+
+' --- Relacionamentos entre as Classes ---
+
+' Relacionamentos do Pacote: Cardápio & Estoque
+ItemCardapio "*" -- "1" CategoriaCardapio : "> pertence à categoria"
+' A linha tracejada ItemCardapio "1" .. "*" Estoque no diagrama original é interpretada como
+' uma associação direta (não agregação/composição) ou uma dependência com cardinalidade.
+' PlantUML usa ".." para linhas tracejadas em associações.
+ItemCardapio "1" .. "*" Estoque : "< depende de / utiliza estoque de"
+Estoque "*" -- "1" Ingrediente : "> é estoque do ingrediente"
+
+' Relacionamentos do Pacote: Pedidos & Mesas
+Pedido "1" *-- "*" ItemPedido : "> contém itens" ' Composição: ItemPedido depende da existência de Pedido
+ItemPedido "*" -- "1" ItemCardapio : "> refere-se ao item"
+Pedido "1" -- "1" Mesa : "> alocado na mesa"
+Pedido "1" -- "1" Cliente : "> feito pelo cliente"
+Pedido "1" -- "1" Funcionario : "> atendido pelo funcionário"
+
+' Relacionamentos do Pacote: Reservas & Eventos
+Reserva "1" -- "1" Cliente : "> reserva feita por"
+Reserva "1" -- "1..*" Mesa : "> reserva mesa(s)"
+
+Evento "1" -- "1" Cliente : "> evento organizado por"
+Evento "1" -- "1..*" Mesa : "> evento ocupa mesa(s)"
+Evento "1" -- "*" RecursoEvento : utiliza recurso >
+
+' Relacionamentos do Pacote: Funcionários
+Funcionario "*" -- "1" Cargo : "> possui o cargo de"
+Funcionario "1" -- "*" EscalaTrabalho : possui escalas >
+EscalaTrabalho "*" -- "1" Turno : pertence ao turno >
+ItemCardapio "1" -- "*" ItemCardapioIngrediente : < compõe-se de
+ItemCardapioIngrediente "*" -- "1" Ingrediente : > usa ingrediente
+ItemCardapio "1" -- "*" ComponenteItemCardapio : < compõe-se de
+ComponenteItemCardapio "*" -- "1" Ingrediente : > usa ingrediente
+Cargo "1" -- "*" CargoPermissao : possui permissao >
+Permissao "1" -- "*" CargoPermissao : < pertence a cargo
+Funcionario "1" -- "*" EscalaFuncionario : possui escalas >
+EscalaFuncionario "*" -- "1" Turno : pertence ao turno >
+
+' --- Legenda Geral (adaptada da imagem) ---
+legend right
+  |= Cor de Fundo da Classe |= Significado da Cor |
+  |<back:AZUL_CLARO_BG> Azul Claro | Classes relacionadas a Estoque/Cardápio |
+  |<back:LARANJA_BG> Laranja | Classes relacionadas a Pedidos/Mesas |
+  |<back:LILAS_CLARO_BG> Lilás Claro | Classes relacionadas a Eventos/Reservas |
+  |<back:VERDE_BG> Verde | Classes relacionadas a Usuários (Clientes, Funcionários) |
+  ---
+  |= Símbolo/Linha |= Significado no Diagrama |
+  | Linha Pontilhada (..) | Dependência ou Associação Direta |
+  | Linha Sólida (--) | Associação Padrão |
+  | *-- (Losango Preenchido) | Composição (parte não existe sem o todo) |
+  | (P) | Chave Primária (Identificador único da entidade) |
+  | (F) | Chave Estrangeira (Referência a outra entidade) |
+end legend
+
+@enduml

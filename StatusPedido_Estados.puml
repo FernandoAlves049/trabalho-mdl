@@ -1,0 +1,24 @@
+@startuml StatusPedido_Estados
+
+title Diagrama de Estados - Status do Pedido
+
+[*] --> AGUARDANDO_PREPARO : Pedido criado
+AGUARDANDO_PREPARO --> EM_PREPARO : Iniciar preparo
+EM_PREPARO --> PRONTO_PARA_ENTREGA : Finalizar preparo
+PRONTO_PARA_ENTREGA --> ENTREGUE : Entregar ao cliente
+ENTREGUE --> PAGO : Pagamento realizado
+AGUARDANDO_PREPARO --> CANCELADO : Cancelamento
+EM_PREPARO --> CANCELADO : Cancelamento
+PRONTO_PARA_ENTREGA --> CANCELADO : Cancelamento
+ENTREGUE --> CANCELADO : Cancelamento
+PAGO --> [*] : Fim do processo
+CANCELADO --> [*] : Fim do processo
+
+state AGUARDANDO_PREPARO #lightyellow
+state EM_PREPARO #lightblue
+state PRONTO_PARA_ENTREGA #lightgreen
+state ENTREGUE #wheat
+state CANCELADO #mistyrose
+state PAGO #palegreen
+
+@enduml

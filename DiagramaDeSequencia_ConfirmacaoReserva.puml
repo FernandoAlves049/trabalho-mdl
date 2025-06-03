@@ -1,0 +1,108 @@
+@startuml DiagramaDeSequencia_ConfirmacaoReserva_v2
+' Diagrama de Sequência para UC14 - Confirmação Automática de Reserva - Fluxo Melhorado
+
+' Aparência
+autonumber "<b>[00]"
+skinparam handwritten false
+skinparam monochrome false
+skinparam shadowing true
+skinparam defaultFontName Arial
+skinparam sequence {
+    ActorBorderColor navy
+    ActorBackgroundColor PaleBlue
+    LifeLineBorderColor black
+    LifeLineBackgroundColor #FFFFF0
+    ParticipantBorderColor navy
+    ParticipantBackgroundColor LightSeaGreen
+    BoxBorderColor #333333
+    BoxBackgroundColor #F8F8F8
+}
+skinparam note {
+    BackgroundColor #FFFFCC
+    BorderColor #888888
+}
+
+title Confirmação Automática de Reserva (UC14) - Fluxo Melhorado
+
+actor Cliente as C
+participant Recepcionista as R
+participant Sistema as S
+participant Mesa as M
+participant Reserva as RV
+
+C -> R: Solicitar reserva (data, hora, pessoas)
+activate R
+R -> S: criarReserva(dadosReservaOriginal)
+activate S
+S -> M: verificarDisponibilidade(dataOriginal, horaOriginal, pessoas)
+activate M
+M --> S: disponibilidade(mesasDisponiveis)
+deactivate M
+
+alt Mesas disponíveis para data/hora original
+    S -> RV: registrarReserva(dadosReservaOriginal, status=StatusReserva.CONFIRMADA)
+    activate RV
+    RV --> S: reservaRegistrada(idReserva, statusConfirmado)
+    deactivate RV
+    S --> R: reservaConfirmada(idReserva, statusConfirmado)
+    deactivate S
+    ' Desativa S da chamada criarReserva
+    R --> C: Reserva confirmada para [data/hora original]!
+    deactivate R
+    ' Desativa R da chamada Solicitar reserva
+else Nenhuma mesa disponível para data/hora original
+    S -> S: buscarProximaDataHoraDisponivel(dadosReservaOriginal)
+    note right of S: Sistema tenta encontrar uma alternativa
+    S --> R: informarIndisponibilidadeESugestao(dataOriginal, horaOriginal, sugestaoDataHora)
+
+    R --> C: "Lamentamos, não há mesas para [data/hora original].\nSugerimos [sugestaoDataHora]. Aceita esta sugestão?"
+    activate C
+
+    alt Cliente aceita sugestão
+        C --> R: "Sim, aceito a sugestão para [sugestaoDataHora]."
+        deactivate C
+        R -> S: reagendarOuCriarNovaReserva(dadosReservaOriginal, sugestaoDataHora)
+        ' S continua ativo da chamada original ou é reativado.
+        ' Para este fluxo, vamos considerar que S continua a processar.
+
+        S -> M: verificarDisponibilidade(sugestaoDataHora, pessoas)
+        activate M
+        M --> S: disponibilidadeNovaData(mesasDisponiveisNovaData)
+        deactivate M
+
+        alt Mesas disponíveis para nova data/hora sugerida
+            S -> RV: registrarReserva(sugestaoDataHora, pessoas, status=StatusReserva.CONFIRMADA)
+            activate RV
+            RV --> S: reservaRegistrada(idNovaReserva, statusConfirmadoNovaData)
+            deactivate RV
+            S --> R: reservaConfirmada(idNovaReserva, statusConfirmadoNovaData)
+            deactivate S
+            ' Desativa S da chamada criarReserva/reagendar
+            R --> C: "Ótimo! Sua reserva está confirmada para [sugestaoDataHora]!"
+            deactivate R
+            ' Desativa R da chamada Solicitar reserva
+        else Nenhuma mesa disponível para nova data/hora sugerida (ex: alguém reservou enquanto Cliente decidia)
+            S --> R: informarNovaIndisponibilidade(sugestaoDataHora)
+            deactivate S
+            ' Desativa S da chamada criarReserva/reagendar
+            R --> C: "Que pena! Infelizmente, a data sugerida ([sugestaoDataHora])\ntambém ficou indisponível. Gostaria de tentar outra data?"
+            note right of C: Cliente pode tentar nova data (reinicia fluxo) ou desistir.
+            deactivate R
+            ' Desativa R da chamada Solicitar reserva
+        end
+    else Cliente não aceita sugestão
+        C --> R: "Não, obrigado."
+        deactivate C
+        ' Opcional: R pode notificar S que a sugestão foi recusada, se necessário para estatísticas.
+        ' R -> S: sugestaoRecusada(dadosReservaOriginal)
+        S --> R: notificacaoRecusaProcessada() ' Mensagem genérica de finalização para S
+        deactivate S
+        ' Desativa S da chamada criarReserva
+        R --> C: "Entendido. Lamentamos não poder ajudar hoje."
+        deactivate R
+        ' Desativa R da chamada Solicitar reserva
+    end
+end
+
+@enduml
+' Fim do diagrama de sequência para UC14 - Confirmação Automática de Reserva - Fluxo Melhorado

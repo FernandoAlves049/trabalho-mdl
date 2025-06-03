@@ -1,0 +1,151 @@
+@startuml Diagrama de Atividade
+title Diagrama de Atividade do Restaurante
+skinparam {
+  DefaultFontName Arial
+  ActivityBorderColor #4A4A4A  // Cinza escuro para bordas das atividades
+  ActivityBackgroundColor #FFFFFF // Branco para o fundo das atividades
+  ActivityDiamondBorderColor #4A4A4A // Cinza escuro para bordas de decisões
+  ActivityDiamondBackgroundColor #F8F8F8 // Cinza muito claro para fundo de decisões
+  SwimlaneBorderColor #666666 // Cinza médio para bordas das raias
+  ArrowColor #262626 // Cinza bem escuro para setas
+  NoteBackgroundColor #FFFFE0 // Amarelo bem claro para notas
+  NoteBorderColor #555555 // Cinza para bordas de notas
+
+  Nodesep 80
+  Ranksep 90
+  linetype ortho
+}
+
+' Definição das cores das raias
+!define RECEPCIONISTA_COLOR #A3C4E0
+!define SISTEMA_COLOR #95A5B6
+!define GARCOM_COLOR #FFD700
+!define COZINHA_COLOR #f18b82
+!define BAR_COLOR #B58FAA
+
+|RECEPCIONISTA_COLOR|Recepcionista|
+start
+:Receber cliente;
+note right
+  Verificar se possui reserva
+  ou é cliente sem reserva
+end note
+
+|SISTEMA_COLOR|Sistema|
+if (Cliente com reserva?) then (Sim)
+  :Verificar dados da reserva no sistema;
+  :Atribuir mesa reservada;
+  :Atualizar status da mesa para OCUPADA;
+else (Não)
+  :Verificar mesas disponíveis no sistema;
+  if (Há mesas disponíveis?) then (Sim)
+    :Atribuir mesa livre;
+    :Atualizar status da mesa para OCUPADA;
+  else (Não,down)
+    |RECEPCIONISTA_COLOR|Recepcionista|
+    :Informar indisponibilidade ao cliente;
+    :Sugerir espera ou registrar em lista de espera;
+    if (Cliente aceita esperar?) then (Sim)
+      :Registrar cliente na lista de espera;
+      :Aguardar liberação de mesa;
+      |SISTEMA_COLOR|Sistema|
+      :Atribuir mesa ao cliente da espera;
+      :Atualizar status da mesa para OCUPADA;
+    else (Não)
+      :Encerrar atendimento;
+      stop
+    endif
+  endif
+endif
+
+|RECEPCIONISTA_COLOR|Recepcionista|
+:Conduzir cliente à mesa;
+
+|GARCOM_COLOR|Garçom|
+:Apresentar cardápio;
+:Anotar pedidos do cliente;
+
+|SISTEMA_COLOR|Sistema|
+:Registrar pedido no sistema;
+:Transmitir pedido detalhado para cozinha/bar;
+fork
+  |COZINHA_COLOR|Cozinha|
+  :Cozinha prepara alimentos;
+fork again
+  |BAR_COLOR|Bar|
+  :Bar prepara bebidas;
+end fork
+
+|GARCOM_COLOR|Garçom|
+:Entregar pedidos à mesa;
+repeat
+  :Verificar necessidades adicionais do cliente;
+repeat while (Cliente precisa de algo mais?) is (Sim)
+-> Não;
+
+|SISTEMA_COLOR|Sistema|
+:Gerar conta detalhada;
+
+|GARCOM_COLOR|Garçom|
+:Entregar conta ao cliente;
+:Cliente escolhe forma de pagamento;
+
+if (Forma de Pagamento?) then (Dinheiro)
+  :Receber valor em dinheiro;
+  |SISTEMA_COLOR|Sistema|
+  :Registrar pagamento em dinheiro;
+  |GARCOM_COLOR|Garçom|
+  if (Necessário troco?) then (Sim)
+    :Calcular e entregar troco;
+  endif
+else if (Cartão) then
+  :Apresentar máquina de cartão;
+  :Cliente insere/aproxima cartão;
+  |SISTEMA_COLOR|Sistema|
+  :Processar transação com cartão;
+  if (Pagamento aprovado?) then (Sim)
+    |GARCOM_COLOR|Garçom|
+    :Entregar comprovante ao cliente (se solicitado);
+  else (Não)
+    |GARCOM_COLOR|Garçom|
+    :Informar problema na transação;
+    :Solicitar outra forma de pagamento;
+    ->[up] Cliente escolhe forma de pagamento; 
+  endif
+else if (PIX) then
+  :Apresentar QR Code/Chave PIX;
+  |SISTEMA_COLOR|Sistema|
+  :Aguardar confirmação do PIX;
+  if (PIX confirmado?) then (Sim)
+    :Confirmar recebimento ao cliente;
+  else (Não)
+    |GARCOM_COLOR|Garçom|
+    :Informar problema na transação PIX;
+    :Solicitar outra forma de pagamento;
+    :[up] Cliente escolhe forma de pagamento;
+  endif
+else (Outra forma)
+  :Processar outra forma de pagamento;
+  note left: Detalhar conforme necessário (ex: voucher)
+endif
+
+|RECEPCIONISTA_COLOR|Recepcionista|
+:Registrar liberação da mesa;
+
+|SISTEMA_COLOR|Sistema|
+:Atualizar status da mesa para LIVRE;
+:Gerar registro completo do atendimento;
+:Emitir nota fiscal (se aplicável e solicitado);
+
+stop
+
+legend right
+  |= Ator/Setor |= Cor da Raia |
+  |<back:RECEPCIONISTA_COLOR> Recepcionista | Azul Profissional |
+  |<back:SISTEMA_COLOR> Sistema | Azul Petróleo |
+  |<back:GARCOM_COLOR> Garçom | Laranja Vibrante |
+  |<back:COZINHA_COLOR> Cozinha | Vermelho Intenso |
+  |<back:BAR_COLOR> Bar | Roxo Vinho |
+end legend
+
+@enduml

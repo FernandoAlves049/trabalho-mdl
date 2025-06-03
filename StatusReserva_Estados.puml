@@ -1,0 +1,27 @@
+@startuml StatusReserva_Estados
+
+title Diagrama de Estados - Status da Reserva
+
+[*] --> PENDENTE_CONFIRMACAO : Reserva criada
+PENDENTE_CONFIRMACAO --> CONFIRMADA : Confirmação recebida
+PENDENTE_CONFIRMACAO --> CANCELADA_PELO_CLIENTE : Cancelamento pelo cliente
+PENDENTE_CONFIRMACAO --> CANCELADA_PELO_RESTAURANTE : Cancelamento pelo restaurante
+CONFIRMADA --> CHECK_IN : Cliente chegou
+CONFIRMADA --> NO_SHOW : Cliente não compareceu
+CHECK_IN --> CONCLUIDA : Reserva utilizada
+CONFIRMADA --> CANCELADA_PELO_CLIENTE : Cancelamento pelo cliente
+CONFIRMADA --> CANCELADA_PELO_RESTAURANTE : Cancelamento pelo restaurante
+NO_SHOW --> [*] : Fim
+CONCLUIDA --> [*] : Fim
+CANCELADA_PELO_CLIENTE --> [*] : Fim
+CANCELADA_PELO_RESTAURANTE --> [*] : Fim
+
+state PENDENTE_CONFIRMACAO #lightyellow
+state CONFIRMADA #lightblue
+state CHECK_IN #palegreen
+state CONCLUIDA #wheat
+state NO_SHOW #mistyrose
+state CANCELADA_PELO_CLIENTE #lightcoral
+state CANCELADA_PELO_RESTAURANTE #lightpink
+
+@enduml
