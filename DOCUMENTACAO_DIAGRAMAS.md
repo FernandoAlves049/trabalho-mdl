@@ -18,22 +18,22 @@ Este projeto utiliza diferentes tipos de diagramas UML para representar, de form
 
 ## 🧩 O que representa cada diagrama UML deste projeto
 
-- **🏷️ Diagrama de Classes:**
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f3f7.png" width="22" style="vertical-align:middle;"/> **Diagrama de Classes:**
   Este diagrama apresenta a estrutura fundamental do sistema, mostrando todas as principais entidades (como Cliente, Pedido, Funcionário, Mesa, Reserva, etc.), seus atributos (dados que cada entidade armazena) e os relacionamentos entre elas (como "um Pedido pertence a um Cliente" ou "uma Reserva pode envolver várias Mesas"). Ele também evidencia o uso de enums (tipos padronizados de status, como StatusPedido ou StatusMesa), além de modelar permissões, escalas de trabalho, ficha técnica dos pratos e recursos para eventos. É essencial para entender como as informações são organizadas e como as diferentes partes do sistema se conectam.
 
-- **🔄 Diagrama de Atividade:**
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f501.png" width="22" style="vertical-align:middle;"/> **Diagrama de Atividade:**
   Este diagrama detalha o fluxo completo de atendimento ao cliente no restaurante, desde a chegada até o pagamento e liberação da mesa. Ele utiliza raias para separar as responsabilidades de cada ator/setor (Recepcionista, Sistema, Garçom, Cozinha, Bar), mostrando claramente quem faz o quê em cada etapa. O diagrama inclui decisões (como "há mesas disponíveis?"), fluxos alternativos (como lista de espera), paralelismos (preparo de comida e bebida ao mesmo tempo) e diferentes formas de pagamento. É ideal para visualizar processos, identificar gargalos e propor melhorias no atendimento.
 
-- **⏩ Diagrama de Sequência:**
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/23e9.png" width="22" style="vertical-align:middle;"/> **Diagrama de Sequência:**
   Existem dois diagramas de sequência principais neste projeto:
   - **Registrar Pedido:** Mostra, passo a passo, como Cliente, Garçom, Sistema, Estoque, Cozinha e Bar interagem para registrar e processar um pedido. Detalha desde a escolha do pedido até a entrega na mesa, incluindo verificação de estoque, atualização de status e comunicação entre setores.
   - **Confirmação Automática de Reserva:** Detalha o processo de confirmação de reservas, incluindo a verificação de disponibilidade de mesas, sugestão de alternativas caso não haja disponibilidade e atualização do status da reserva. Mostra como o sistema lida com fluxos alternativos, como lista de espera ou reagendamento.
   Esses diagramas são fundamentais para entender a ordem e o conteúdo das mensagens trocadas entre os participantes do sistema em situações reais.
 
-- **👤 Diagrama de Casos de Uso:**
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png" width="22" style="vertical-align:middle;"/> **Diagrama de Casos de Uso:**
   Este diagrama apresenta todos os atores do sistema (pessoas ou sistemas externos, como Gerente, Garçom, Recepcionista, Chef, etc.) e os principais casos de uso (funcionalidades) disponíveis, como "Gerenciar Funcionários", "Registrar Pedido", "Gerenciar Reservas", entre outros. Ele mostra quem pode executar cada ação e as relações de inclusão entre casos de uso (<<include>>), facilitando a visualização dos requisitos funcionais e das responsabilidades de cada papel no sistema.
 
-- **🔁 Diagramas de Estado:**
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f501.png" width="22" style="vertical-align:middle;"/> **Diagramas de Estado:**
   São dois diagramas que mostram o ciclo de vida das principais entidades dinâmicas do sistema:
   - **Status do Pedido:** Exibe todos os estados possíveis de um pedido (Aguardando Preparo, Em Preparo, Pronto para Entrega, Entregue, Pago, Cancelado) e as transições entre eles, como "Pedido criado", "Iniciar preparo", "Pagamento realizado" ou "Cancelamento". Ajuda a entender as regras de negócio e os possíveis caminhos de um pedido.
   - **Status da Reserva:** Mostra os estados de uma reserva (Pendente de Confirmação, Confirmada, Check-in, Concluída, No-show, Cancelada pelo Cliente, Cancelada pelo Restaurante) e como as reservas transitam entre esses estados, incluindo situações como confirmação, chegada do cliente, não comparecimento ou cancelamento. Esclarece o ciclo de vida das reservas e as ações possíveis em cada etapa.
@@ -42,7 +42,7 @@ Este projeto utiliza diferentes tipos de diagramas UML para representar, de form
 
 ## 🗂️ Resumo dos Diagramas
 
-### 1. 🏷️ **Diagrama de Classes** [`diagrama_classes.puml`]
+### 1. **Diagrama de Classes** [`diagrama_classes.puml`]
 - **Descrição:** Modela as principais entidades do sistema, seus atributos e relacionamentos.
 - **Destaques:**
   - Uso de enums para status e tipos (StatusPedido, StatusMesa, StatusReserva, TipoMesa, UnidadeMedida)
@@ -51,33 +51,33 @@ Este projeto utiliza diferentes tipos de diagramas UML para representar, de form
   - Ficha técnica de itens do cardápio (ComponenteItemCardapio)
   - Recursos para eventos (RecursoEvento)
 
-### 2. 🔄 **Diagrama de Atividade** [`Diagrama de Atividade.puml`]
+### 2. **Diagrama de Atividade** [`Diagrama de Atividade.puml`]
 - **Descrição:** Representa o fluxo completo de atendimento ao cliente, desde a recepção até o pagamento e liberação da mesa.
 - **Destaques:**
   - Raias para cada ator/setor (Recepcionista, Sistema, Garçom, Cozinha, Bar)
   - Uso consistente dos enums StatusMesa
   - Fluxo detalhado para diferentes formas de pagamento
 
-### 3. ⏩ **Diagrama de Sequência - Registrar Pedido** [`DiagramaDeSequencia_RegistrarPedido.puml`]
+### 3. **Diagrama de Sequência - Registrar Pedido** [`DiagramaDeSequencia_RegistrarPedido.puml`]
 - **Descrição:** Mostra a interação entre Cliente, Garçom, Sistema, Estoque, Cozinha e Bar no processo de registro de um pedido.
 - **Destaques:**
   - Verificação de disponibilidade de itens no estoque
   - Atualização de status do pedido e da mesa
   - Envio automático de pedidos para cozinha e bar
 
-### 4. ⏩ **Diagrama de Sequência - Confirmação Automática de Reserva** [`DiagramaDeSequencia_ConfirmacaoReserva.puml`]
+### 4. **Diagrama de Sequência - Confirmação Automática de Reserva** [`DiagramaDeSequencia_ConfirmacaoReserva.puml`]
 - **Descrição:** Detalha o processo de confirmação automática de reservas (UC14), incluindo verificação de disponibilidade e atualização do status da reserva.
 - **Destaques:**
   - Fluxo alternativo para reservas pendentes quando não há mesas disponíveis
   - Uso do enum StatusReserva
 
-### 5. 👤 **Diagrama de Casos de Uso** [`diagrama de caso de uso.wsd`]
+### 5. **Diagrama de Casos de Uso** [`diagrama de caso de uso.wsd`]
 - **Descrição:** Apresenta os principais atores do sistema e suas interações com os casos de uso.
 - **Destaques:**
   - Cobertura de todos os requisitos funcionais principais
   - Relações `<<include>>` entre casos de uso
 
-### 6. 🔁 **Diagramas de Estado**
+### 6. **Diagramas de Estado**
 - **Status do Pedido** [`StatusPedido_Estados.puml`]:
   - Mostra o ciclo de vida do pedido, do registro ao pagamento/cancelamento.
 - **Status da Reserva** [`StatusReserva_Estados.puml`]:
