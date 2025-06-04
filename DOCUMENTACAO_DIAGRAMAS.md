@@ -70,7 +70,7 @@ Este projeto utiliza diferentes tipos de diagramas UML para representar, de form
 
 ## 👨‍💻 Autores
 
-- **Fernando Alves de Souza** - [FernandoAlves049](https://github.com/FernandoAlves049)
-- **Victor Hugo Marques Leite** - [TempestOFC](https://github.com/TempestOFC)
-- **Felipe Montalvão Rodrigues** - [Felipemonrod](https://github.com/Felipemonrod)
-- **Henrique Ferreira da Silva** - [Kobayashys](https://github.com/Kobayashys)
+- <img src="https://github.com/FernandoAlves049.png" width="32" height="32" style="vertical-align:middle; border-radius:50%;" /> **Fernando Alves de Souza** - [FernandoAlves049](https://github.com/FernandoAlves049)
+- <img src="https://github.com/TempestOFC.png" width="32" height="32" style="vertical-align:middle; border-radius:50%;" /> **Victor Hugo Marques Leite** - [TempestOFC](https://github.com/TempestOFC)
+- <img src="https://github.com/Felipemonrod.png" width="32" height="32" style="vertical-align:middle; border-radius:50%;" /> **Felipe Montalvão Rodrigues** - [Felipemonrod](https://github.com/Felipemonrod)
+- <img src="https://github.com/Kobayashys.png" width="32" height="32" style="vertical-align:middle; border-radius:50%;" /> **Henrique Ferreira da Silva** - [Kobayashys](https://github.com/Kobayashys)
