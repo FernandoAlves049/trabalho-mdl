@@ -1,6 +1,36 @@
 # Documentação dos Diagramas UML do Sistema de Gerenciamento de Restaurante
 
-Bem-vindo à documentação dos diagramas UML do projeto de Sistema de Gerenciamento de Restaurante! Aqui você encontrará uma visão clara e organizada de como o sistema foi modelado, facilitando o entendimento tanto para desenvolvedores quanto para interessados sem conhecimento técnico.
+---
+
+## 📁 Estrutura de Pastas do Projeto
+
+```
+mermaid/
+├── diagramas codigo/   # Diagramas Mermaid (.mmd) editáveis
+│   ├── Diagrama de Atividade - pedido.mmd
+│   ├── Diagrama de Atividade - Reserva.mmd
+│   ├── Diagrama de Atividades - Pagamento.mmd
+│   ├── Diagrama de caso de uso.mmd
+│   ├── Diagrama de Classe Completo.mmd
+│   ├── Diagrama de Classe Simplificado.mmd
+│   ├── Diagrama de Estado Pagamento.mmd
+│   ├── Diagrama de Estados  Status de mesa.mmd
+│   ├── Diagrama de Estados - Status da Reserva.mmd
+│   ├── Diagrama de Estados - Status do Pedido.mmd
+│   ├── Diagrama de Sequência - Confirmação de Reserva.mmd
+│   └── Diagrama de Sequência - Registrar Pedido.mmd
+├── diagramas img.png/  # Exportações dos diagramas em PNG
+│   ├── mesa_status_diagram.png
+│   ├── novo_pedido_registro.png
+│   ├── ...
+├── diagramas svg/      # Exportações dos diagramas em SVG
+│   ├── mesa_status_diagram.svg
+│   ├── novo_pedido_registro.svg
+│   ├── ...
+```
+
+- Os arquivos `.mmd` podem ser editados e visualizados conforme instruções abaixo.
+- As imagens `.png` e `.svg` são geradas a partir dos arquivos Mermaid para visualização rápida e inclusão em documentos.
 
 ---
 
