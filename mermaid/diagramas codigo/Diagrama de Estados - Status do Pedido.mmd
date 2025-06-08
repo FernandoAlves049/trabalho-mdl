@@ -1,0 +1,21 @@
+---
+config:
+    theme: neo
+
+
+title: Diagrama de Estados - Status do Pedido
+---
+stateDiagram-v2
+    [*] --> AguardandoPreparo: Pedido criado
+    AguardandoPreparo --> EmPreparo: Iniciar preparo
+    EmPreparo --> ProntoEntrega: Finalizar preparo
+    ProntoEntrega --> Entregue: Entregar ao cliente
+    ProntoEntrega --> Cancelado: Cancelar pedido
+    Entregue --> PendPagamento: Aguardando pagamento
+    PendPagamento --> Pago: Pagamento realizado
+    Entregue --> Pago: Pagamento adiantado
+    Pago --> [*]: Fim
+
+    AguardandoPreparo --> Cancelado: Cancelamento
+    EmPreparo --> Cancelado: Cancelamento
+    Cancelado --> [*]: Fim

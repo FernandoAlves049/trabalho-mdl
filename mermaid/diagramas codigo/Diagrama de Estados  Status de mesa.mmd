@@ -1,0 +1,17 @@
+---
+config:
+  theme: neo
+
+title: Diagrama de Estados - Status de Mesa
+---
+stateDiagram-v2
+    [*] --> Livre
+    Livre --> Reservada : reserva feita
+    Livre --> Ocupada : cliente senta sem reserva
+    Reservada --> Ocupada : cliente chegou
+    Ocupada --> Livre : cliente saiu
+    Reservada --> Livre : reserva cancelada
+    Livre --> Indisponivel : manutenção
+    Reservada --> Indisponivel : bloqueio
+    Ocupada --> Indisponivel : emergência
+    Indisponivel --> Livre : disponível novamente

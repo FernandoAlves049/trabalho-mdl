@@ -1,0 +1,16 @@
+---
+config:
+  theme: neo
+    
+title: Diagrama de Estado do Pagamento
+---
+stateDiagram-v2
+  [*] --> Criado
+  Criado --> Pendente : pedido enviado
+  Pendente --> Processando : cliente escolhe forma de pagamento
+  Processando --> Pago : transação aprovada
+  Processando --> Recusado : erro na transação
+  Recusado --> Cancelado
+  Pendente --> Cancelado : cancelado pelo cliente
+  Pago --> [*]
+  Cancelado --> [*]

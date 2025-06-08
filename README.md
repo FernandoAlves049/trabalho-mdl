@@ -42,7 +42,7 @@ Este projeto utiliza diferentes tipos de diagramas UML para representar, de form
 
 ## 🗂️ Resumo dos Diagramas
 
-### 1. **Diagrama de Classes** [`diagrama_classes.puml`]
+### 1. **Diagrama de Classes** [`mermaid/Diagrama de Classe Completo.mmd`]
 - **Descrição:** Modela as principais entidades do sistema, seus atributos e relacionamentos.
 - **Destaques:**
   - Uso de enums para status e tipos (StatusPedido, StatusMesa, StatusReserva, TipoMesa, UnidadeMedida)
@@ -50,45 +50,75 @@ Este projeto utiliza diferentes tipos de diagramas UML para representar, de form
   - Estrutura para escalas de trabalho e turnos (EscalaFuncionario, Turno)
   - Ficha técnica de itens do cardápio (ComponenteItemCardapio)
   - Recursos para eventos (RecursoEvento)
+  - Inclusão de Pagamento e relacionamento com Pedido
 
-### 2. **Diagrama de Atividade** [`Diagrama de Atividade.puml`]
+### 2. **Diagrama de Atividade** [`mermaid/Diagrama de Atividade - pedido.mmd`, `mermaid/Diagrama de Atividade - Reserva.mmd`, `mermaid/Diagrama de Atividades - Pagamento.mmd`]
 - **Descrição:** Representa o fluxo completo de atendimento ao cliente, desde a recepção até o pagamento e liberação da mesa.
 - **Destaques:**
   - Raias para cada ator/setor (Recepcionista, Sistema, Garçom, Cozinha, Bar)
   - Uso consistente dos enums StatusMesa
   - Fluxo detalhado para diferentes formas de pagamento
 
-### 3. **Diagrama de Sequência - Registrar Pedido** [`DiagramaDeSequencia_RegistrarPedido.puml`]
-- **Descrição:** Mostra a interação entre Cliente, Garçom, Sistema, Estoque, Cozinha e Bar no processo de registro de um pedido.
+### 3. **Diagrama de Sequência - Registrar Pedido** [`mermaid/Diagrama de Sequência - Registrar Pedido.mmd`]
+- **Descrição:** Mostra a interação entre Cliente, Garçom, Sistema, Estoque, Cozinha e Bar no processo de registro e processamento de um pedido.
 - **Destaques:**
-  - Verificação de disponibilidade de itens no estoque
+  - Verificação de disponibilidade de itens e bebidas no estoque
   - Atualização de status do pedido e da mesa
   - Envio automático de pedidos para cozinha e bar
 
-### 4. **Diagrama de Sequência - Confirmação Automática de Reserva** [`DiagramaDeSequencia_ConfirmacaoReserva.puml`]
+### 4. **Diagrama de Sequência - Confirmação Automática de Reserva** [`mermaid/Diagrama de Sequência - Confirmação de Reserva.mmd`]
 - **Descrição:** Detalha o processo de confirmação automática de reservas (UC14), incluindo verificação de disponibilidade e atualização do status da reserva.
 - **Destaques:**
   - Fluxo alternativo para reservas pendentes quando não há mesas disponíveis
   - Uso do enum StatusReserva
 
-### 5. **Diagrama de Casos de Uso** [`diagrama de caso de uso.wsd`]
+### 5. **Diagrama de Casos de Uso** [`mermaid/Diagrama de caso de uso.mmd`]
 - **Descrição:** Apresenta os principais atores do sistema e suas interações com os casos de uso.
 - **Destaques:**
   - Cobertura de todos os requisitos funcionais principais
   - Relações `<<include>>` entre casos de uso
 
 ### 6. **Diagramas de Estado**
-- **Status do Pedido** [`StatusPedido_Estados.puml`]:
+- **Status do Pedido** [`mermaid/Diagrama de Estados - Status do Pedido.mmd`]:
   - Mostra o ciclo de vida do pedido, do registro ao pagamento/cancelamento.
-- **Status da Reserva** [`StatusReserva_Estados.puml`]:
+- **Status da Reserva** [`mermaid/Diagrama de Estados - Status da Reserva.mmd`]:
   - Mostra o ciclo de vida da reserva, incluindo confirmação, check-in, no-show e cancelamentos.
+- **Status da Mesa** [`mermaid/Diagrama de Estados  Status de mesa.mmd`]:
+  - Mostra o ciclo de vida da mesa, incluindo livre, ocupada, reservada e indisponível.
+- **Status do Pagamento** [`mermaid/Diagrama de Estado Pagamento.mmd`]:
+  - Mostra o ciclo de vida do pagamento, incluindo pendente, realizado, recusado, estornado.
+
+---
+
+## ▶️ Como visualizar e executar os diagramas Mermaid
+
+Todos os diagramas deste projeto estão no formato `.mmd` (Mermaid). Para visualizar ou editar os diagramas, siga um dos métodos abaixo:
+
+### Visualizar no Visual Studio Code
+1. Instale a extensão **"Markdown Preview Mermaid Support"** ou **"Mermaid Editor"** no VS Code.
+2. Abra o arquivo `.mmd` desejado na pasta `mermaid/`.
+3. Pressione `Ctrl+Shift+V` para abrir a visualização Markdown ou utilize o comando `Mermaid: Preview Mermaid Diagram`.
+
+### Visualizar online
+- Acesse o site [Mermaid Live Editor](https://mermaid.live/).
+- Cole o conteúdo do arquivo `.mmd` e visualize o diagrama instantaneamente.
+
+### Exportar para imagem (SVG/PNG)
+- No VS Code, clique com o botão direito no diagrama e escolha "Export as SVG/PNG" (se disponível na extensão).
+- Ou use o [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli):
+  1. Instale o Node.js.
+  2. Execute `npm install -g @mermaid-js/mermaid-cli`.
+  3. Gere a imagem: `mmdc -i caminho/para/arquivo.mmd -o caminho/para/saida.svg`
+
+> **Dica:** Os arquivos `.puml` e `.wsd` podem ser abertos no PlantUML ou no Visual Studio Code com a extensão PlantUML.
 
 ---
 
 ## 📝 Observações Importantes
 - Todos os diagramas utilizam enums e nomes padronizados para garantir **consistência** e **rastreabilidade** entre requisitos e modelagem.
-- Os arquivos `.puml` e `.wsd` podem ser abertos no PlantUML ou no Visual Studio Code com a extensão PlantUML.
-- Versões SVG dos diagramas estão disponíveis na pasta `diagramas/` para visualização rápida.
+- Todos os diagramas estão no formato `.mmd` (Mermaid) e podem ser visualizados diretamente no Visual Studio Code (com extensões Mermaid) ou no site Mermaid Live Editor.
+- Versões SVG dos diagramas podem ser geradas facilmente e estão disponíveis na pasta `diagramas/` para visualização rápida.
+- Recomenda-se manter os diagramas sempre atualizados junto com a evolução do sistema para garantir documentação fiel ao projeto.
 
 ---
 

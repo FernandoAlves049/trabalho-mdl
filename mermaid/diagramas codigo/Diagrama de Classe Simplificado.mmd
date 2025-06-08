@@ -1,0 +1,58 @@
+---
+config:
+  theme: neo
+
+---
+
+classDiagram
+    class Funcionario{
+    +String nomeCompleto
+	    +String cpf
+	    +String email
+	    +String telefone
+	    +Date dataNascimento
+	    +String sexo
+	    +String endereco
+	    +Double salarioBase
+	    +boolean ativo
+    }
+    class Pedido {
+	    +DateTime dataHoraAbertura
+	    +Double totalParcial
+	    +String status
+	    +String observacao
+    }
+    class ItemCardapio {
+	    +String nome
+	    +String descricao
+	    +Double preco
+	    +boolean disponivel
+    }
+    class Mesa {
+	    +int numero
+	    +String status
+	    +String tipo
+    }
+    class Reserva {
+	    +DateTime dataHoraReserva
+	    +DateTime dataHoraLimite
+	    +String observacoes
+    }
+     class Evento {
+	    +String nome
+	    +DateTime dataHora
+	    +Double valorEstimado
+	    +String descricao
+    }
+    class Estoque {
+	    +Double quantidadeDisponivel
+	    +String unidadeMedida
+    }
+
+    Funcionario --> Pedido : realiza
+    Pedido --> ItemCardapio : contém
+    Pedido --> Mesa : vinculado à
+    Reserva --> Mesa : reserva
+    Reserva --> Funcionario : feita por
+    Evento --> Reserva : utiliza
+    ItemCardapio --> Estoque : depende

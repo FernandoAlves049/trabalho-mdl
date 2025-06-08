@@ -1,0 +1,66 @@
+---
+config:
+  theme: neo
+  flowchart:
+    useMaxWidth: true
+  layout: elk
+  title: Diagrama de Caso de Uso - Restaurante
+---
+
+flowchart TB
+ subgraph Pedido["Pedido"]
+    direction TB
+        P1[("Abrir Pedido")]
+        P2[("Imprimir Pedido")]
+        P3[("Registrar Pedido")]
+        Barista["Barista"]
+        Cliente["Cliente"]
+  end
+ subgraph subGraph1["Mesas e Reservas"]
+    direction TB
+        M1[("Gerenciar Estado de Mesas")]
+        M2[("Gerar Reserva de Cliente")]
+        M3[("Gerar Mesa de Reservados")]
+        M4[("Gerenciar Evento Especial")]
+        Garçom["Garçom"]
+        Recepcionista["Recepcionista"]
+  end
+ subgraph subGraph2["Gestão Pessoal"]
+    direction TB
+        G1[("Gerenciar Funcionário")]
+        G2[("Definir Hierarquia e Permissões")]
+        G3[("Controlar Acesso ao Sistema")]
+        G4[("Registrar Escala de Trabalho e Turnos")]
+        Gerente["Gerente"]
+  end
+ subgraph subGraph3["Cardápio e Estoque"]
+    direction TB
+        C1[("Gerenciar Itens do Cardápio")]
+        C2[("Gerenciar Estoques de Ingredientes")]
+        C3[("Notificar Nível Crítico de Estoque")]
+        C4[("Gerar Relatórios de Consumo")]
+        Cozinha["Cozinha"]
+  end
+    Barista --> P1
+    P1 --> P2 & P3
+    Cliente --> P1 & M2
+    Garçom --> M1
+    Recepcionista --> M2 & M3 & M4
+    Gerente --> G1 & G2 & G3 & G4 & C2 & C3 & C4
+    Cozinha --> C1
+    SubChef["SubChef"] --> Cozinha
+    Aux_Cozinha["Aux_Cozinha"] --> Cozinha
+    Aux_Limpeza["Aux_Limpeza"] --> Cozinha
+    Chef_Cozinha["Chef_Cozinha"] --> Cozinha & C2 & C3
+    Chef_Cozinha --> C4
+     Barista:::actor
+     Cliente:::actor
+     Garçom:::actor
+     Recepcionista:::actor
+     Gerente:::actor
+     Cozinha:::actor
+     SubChef:::actor
+     Aux_Cozinha:::actor
+     Aux_Limpeza:::actor
+     Chef_Cozinha:::actor
+    classDef actor fill:#ffffff,stroke:#333,stroke-width:2px,font-weight:bold

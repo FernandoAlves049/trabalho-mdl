@@ -1,0 +1,166 @@
+---
+config:
+  theme: neo
+
+---
+
+classDiagram
+direction TB
+    class Funcionario {
+	    +String nomeCompleto
+	    +String cpf
+	    +String email
+	    +String telefone
+	    +Date dataNascimento
+	    +String sexo
+	    +String endereco
+	    +Double salarioBase
+	    +boolean ativo
+    }
+    class Cargo {
+	    +String nome
+	    +String descricaoResponsabilidades
+    }
+    class Permissao {
+	    +String nomePermissao
+	    +String descricao
+    }
+    class EscalaTrabalho {
+	    +Date dataInicio
+	    +Date dataFim
+    }
+    class EscalaFuncionario {
+	    +Date dataInicio
+	    +Date dataFim
+	    +Time horaInicio
+	    +Time horaFim
+    }
+    class ItemCardapio {
+	    +String nome
+	    +String descricao
+	    +Double preco
+	    +boolean disponivel
+    }
+    class Ingrediente {
+	    +String nome
+	    +String descricao
+	    +String unidadeMedida
+	    +Double quantidadeMinima
+	    +Double quantidadeAtual
+    }
+    class Estoque {
+	    +Double quantidadeDisponivel
+	    +String unidadeMedida
+    }
+    class CategoriaCardapio {
+	    +String nome
+	    +String descricao
+    }
+    class ComponenteCardapio {
+	    +Double quantidade
+	    +String unidadeMedida
+    }
+    class Pedido {
+	    +DateTime dataHoraAbertura
+	    +Double totalParcial
+	    +StatusPedido status
+	    +String observacao
+    }
+    class Pagamento {
+	    +DateTime dataPagamento
+	    +Double valorTotal
+	    +MetodoPagamento metodoPagamento
+	    +String status
+	    +String observacao
+    }
+    class ItemPedido {
+	    +int quantidade
+	    +Double precoUnitario
+	    +Double precoTotal
+    }
+    class Mesa {
+	    +int numero
+	    +StatusMesa status
+	    +String tipo
+    }
+    class TipoMesa {
+	    +String nome
+    }
+    class Reserva {
+	    +DateTime dataHoraReserva
+	    +DateTime dataHoraLimite
+	    +String observacoes
+	    +StatusReserva status
+    }
+    class Evento {
+	    +String nome
+	    +DateTime dataHora
+	    +Double valorEstimado
+	    +String descricao
+    }
+    class RecursoEvento {
+	    +String nome
+	    +String tipo
+	    +Double quantidade
+    }
+    class Cliente {
+	    +String nome
+	    +String telefone
+	    +String email
+    }
+    class Turno {
+	    +String nome
+	    +Time horaInicio
+	    +Time horaFim
+    }
+    class StatusPedido {
+	    AGUARDANDO_PREPARO
+	    EM_PREPARO
+	    PRONTO_PARA_ENTREGA
+	    ENTREGUE
+	    CANCELADO
+	    PAGO
+    }
+    class StatusMesa {
+	    LIVRE
+	    OCUPADA
+	    RESERVADA
+	    INDISPONIVEL
+    }
+    class MetodoPagamento {
+	    DINHEIRO
+	    CARTAO_CREDITO
+	    CARTAO_DEBITO
+	    PIX
+	    VALE_REFEICAO
+    }
+    class StatusReserva {
+	    PENDENTE
+	    CONFIRMADA
+	    CANCELADA_PELO_CLIENTE
+	    CANCELADA_PELO_RESTAURANTE
+	    CONCLUIDA
+	    NO_SHOW
+    }
+	<<enumeration>> StatusPedido
+	<<enumeration>> StatusMesa
+	<<enumeration>> MetodoPagamento
+	<<enumeration>> StatusReserva
+    Funcionario --> Cargo : possui
+    Cargo --> Permissao : possui
+    EscalaTrabalho --> Turno : pertence
+    EscalaFuncionario --> Funcionario : pertence
+    EscalaFuncionario --> Turno : pertence
+    ItemCardapio --> CategoriaCardapio : pertence
+    ItemCardapio --> ComponenteCardapio : possui
+    ComponenteCardapio --> Ingrediente : usa
+    Ingrediente --> Estoque : possui
+    Pedido --> Mesa : associado a
+    Pedido --> ItemPedido : possui
+    Pedido --> Pagamento : possui
+    ItemPedido --> ItemCardapio : referencia
+    Mesa --> TipoMesa : possui
+    Reserva --> Cliente : feita por
+    Reserva --> Mesa : reserva
+    Evento --> Cliente : organizado por
+    Evento -- RecursoEvento : utiliza

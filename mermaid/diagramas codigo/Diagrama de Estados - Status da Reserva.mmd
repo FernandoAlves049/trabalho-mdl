@@ -1,0 +1,23 @@
+---
+config:
+    theme: neo
+
+
+    title: Diagrama de Estados - Status da Reserva
+---
+stateDiagram-v2
+    [*] --> PendenteConfirmacao: Reserva criada
+
+    PendenteConfirmacao --> Confirmada: Confirmação pelo restaurante
+    PendenteConfirmacao --> CanceladaCliente: Cancelamento pelo cliente
+
+    Confirmada --> CheckIn: Cliente chegou
+    Confirmada --> NoShow: Cliente não compareceu
+    Confirmada --> CanceladaCliente
+
+    CheckIn --> Concluida: Reserva utilizada
+    CheckIn --> CanceladaCliente: Cancelamento tardio
+
+    Concluida --> [*]: Fim
+    NoShow --> [*]: Fim
+    CanceladaCliente --> [*]: Fim

@@ -1,0 +1,22 @@
+---
+config:
+  theme: neo
+layout: dagre
+---
+flowchart TD
+    Inicio["Início"] --> AnotarPedido["Garçom anota o pedido"]
+    AnotarPedido --> VerificarDisponibilidade{"Itens disponíveis no estoque?"}
+    VerificarDisponibilidade -- Sim --> DecisaoPedido{"Pedido inclui comida e bebida?"}
+    EnviaCozinha["Enviar para cozinha"] --> Join["=="]
+    EnviaBar["Enviar para bar"] --> Join
+    Join --> AtualizarStatus["Atualizar status: Em preparo"]
+    AtualizarStatus --> Pronto["Atualizar status: Pronto"]
+    Pronto --> Entregue["Atualizar status: Entregue"]
+    Entregue --> Fim["Fim"]
+    VerificarDisponibilidade -- Não --> Fim
+    n1["Fork/Join"] --> EnviaCozinha & EnviaBar
+    DecisaoPedido --> n1
+    Inicio@{ shape: fr-circ}
+    Join@{ shape: fork}
+    Fim@{ shape: f-circ}
+    n1@{ shape: fork}

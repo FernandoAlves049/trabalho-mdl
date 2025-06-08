@@ -1,0 +1,30 @@
+---
+config:
+  theme: neo
+
+---
+
+graph TD
+    A[Cliente solicita reserva] --> B[Recepcionista recebe a solicitação];
+    B --> C[Recepcionista acessa o sistema para gerenciar reservas];
+    C --> D[Agenda a reserva com cliente, data, horário e mesa];
+    D --> E{Verificar Disponibilidade no Sistema};
+    E -- Disponível --> F[Sistema realiza a confirmação automática da reserva];
+    F --> G[Status da mesa é atualizado para 'Reservada'];
+    G --> H[Recepcionista informa a confirmação ao cliente];
+    H --> I[Fim];
+    E -- Indisponível --> J[Recepcionista informa indisponibilidade ao cliente];
+    J --> K{Sugerir alternativa?};
+    K -- Sim --> C;
+    K -- Não --> L[Fim];
+
+    subgraph Legenda de Atores/Sistemas
+        direction LR
+        Cliente -- Interage com --> Recepcionista;
+        Recepcionista -- Usa --> Sistema;
+    end
+    
+
+    style A fill:#FFFF00,stroke:#333,stroke-width:2px
+    style I fill:#FF4500,stroke:#333,stroke-width:2px
+    style L fill:#FF4500,stroke:#333,stroke-width:2px

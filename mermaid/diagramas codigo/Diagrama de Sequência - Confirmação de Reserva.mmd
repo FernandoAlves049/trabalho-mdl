@@ -1,0 +1,53 @@
+---
+config:
+  theme: neo
+
+title: Confirmação Automática de Reserva - Fluxo Melhorado
+---
+sequenceDiagram
+    autonumber
+    actor C as Cliente
+    participant R as Recepcionista
+    participant T as Tela
+    participant M as Mesa
+    participant RV as Reserva
+
+    C->>R: Solicita reserva (data, hora, pessoas)
+    activate R
+    R->>T: criarReserva(dadosReservaOriginal)
+    activate T
+    T->>M: verificarDisponibilidade(data, hora, pessoas)
+    activate M
+    M-->>T: disponibilidade(mesasDisponiveis)
+    deactivate M
+
+    alt Mesas disponíveis
+        T->>RV: registrarReserva(dados, status=CONFIRMADA)
+        activate RV
+        RV-->>T: reservaRegistrada(idReserva)
+        deactivate RV
+        T-->>R: reservaConfirmada(idReserva)
+        R-->>C: Reserva confirmada!
+    else Nenhuma mesa disponível
+        T->>T: buscarProximaDataHoraDisponivel()
+        note right of T: Tenta encontrar alternativa viável
+        T-->>R: informarIndisponibilidadeComSugestao(sugestaoDataHora)
+        R-->>C: "Sem mesas. Sugerimos [sugestaoDataHora]. Aceita?"
+        activate C
+        C->>R: [Aceita/Nega sugestão]
+        R->>T: processarRespostaCliente(sugestao, aceitou)
+        alt Cliente aceitou sugestão
+            T->>RV: registrarReserva(sugestao, status=CONFIRMADA)
+            activate RV
+            RV-->>T: reservaRegistrada(idNovaReserva)
+            deactivate RV
+            T-->>R: reservaConfirmada(idNovaReserva)
+            R-->>C: "Reserva confirmada para [sugestaoDataHora]!"
+        else Cliente não aceitou
+            T-->>R: registrarRecusa()
+            R-->>C: "Lamentamos. Esperamos vê-lo em breve."
+        end
+        deactivate C
+    end
+    deactivate R
+    deactivate T

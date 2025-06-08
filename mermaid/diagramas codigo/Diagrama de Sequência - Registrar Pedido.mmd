@@ -1,0 +1,37 @@
+---
+config:
+  theme: neo
+title: Registrar Novo Pedido
+---
+sequenceDiagram
+  actor C as Cliente
+  actor G as Garçom
+  participant S as Pedido
+  participant E as Estoque
+  participant CZ as Cozinha
+  
+  participant CHF as Chefes
+  autonumber
+  C ->>+ G: Gostaria de fazer um pedido.
+  G ->>+ S: iniciaAtendimento(id_mesa)
+  S -->> G: retornarCardapio()
+  G ->>+ C: Mostrar cardápio.
+  C -->>- G: EscolhePedido(itens, bebidas)
+  G ->> S: enviarPedido(id_mesa, itens, bebidas)
+  S ->>+ E: verificarDisponibilidadeItens(itens, bebidas)
+  E -->>- S: respostaDisponibilidade(isDisponivel)
+  alt Itens Disponíveis
+    S ->>+ CZ: enviarPedidoParaCozinha(pedido, bebidas)
+    CZ -->> S: pedidoRecebidoPelaCozinha()
+    CZ ->>+ CHF: distribuirTarefas(pedido, bebidas)
+    CHF ->>+ E: solicitarItens(ingredientes, bebidas)
+    E -->>- CHF: entregarItens(ingredientes, bebidas)
+    CHF -->>- CZ: pedidoRealizadoNaEstacao()
+    CZ -->>- S: informarPedidoPronto(pedido, bebidas)
+    S ->> S: atualizarStatusPedido(PRONTO)
+    S -->> G: notificarPedidoProntoParaServir()
+    G ->> C: Entregar pedido e bebidas.
+  else Itens Indisponíveis
+    S -->> G: informarIndisponibilidadeItens()
+    Note over G, C: Garçom informa o cliente para alterar o pedido.
+  end

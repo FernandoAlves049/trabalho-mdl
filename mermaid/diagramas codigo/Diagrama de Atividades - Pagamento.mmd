@@ -1,0 +1,25 @@
+---
+config:
+  theme: neo
+  
+  title: Diagrama de Atividade - Pagamento
+
+---
+
+flowchart TD
+    Inicio["Início"] --> GerarPedido["Pedido gerado"]
+    GerarPedido --> EscolherForma["Cliente escolhe forma de pagamento"]
+    EscolherForma --> ValidarPagamento["Validar pagamento"]
+    ValidarPagamento --> Aprovado{"Pagamento aprovado?"}
+    Aprovado -- Sim --> Confirmar["Confirmar pagamento e atualizar status"]
+    Confirmar --> Fim["Fim"]
+    Aprovado -- Não --> Falha["Notificar falha ao cliente"]
+    Falha --> Cancelar["Cancelar pagamento"]
+    Cancelar --> Fim
+
+    Inicio@{ shape: fr-circ}
+    Fim@{ shape: f-circ}
+
+
+    style Inicio fill:#000080,stroke:#333,stroke-width:2px
+    style Fim fill:#000080,stroke:#333,stroke-width:2px
